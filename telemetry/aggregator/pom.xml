@@ -40,6 +40,17 @@
             <scope>provided</scope>
         </dependency>
 
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-config</artifactId>
+        </dependency>
+
+        <!-- для того чтобы config-client делал несколько попыток подключиться к config-server  -->
+        <dependency>
+            <groupId>org.springframework.retry</groupId>
+            <artifactId>spring-retry</artifactId>
+        </dependency>
+
         <!--   Tests     -->
         <dependency>
             <groupId>org.springframework.boot</groupId>

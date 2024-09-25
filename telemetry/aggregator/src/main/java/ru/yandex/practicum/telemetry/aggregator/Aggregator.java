@@ -6,9 +6,6 @@ import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 import org.springframework.context.ConfigurableApplicationContext;
 import ru.yandex.practicum.telemetry.aggregator.service.AggregationStarter;
 
-/**
- * Главный класс сервиса Aggregator.
- */
 @SpringBootApplication
 @ConfigurationPropertiesScan
 public class Aggregator {

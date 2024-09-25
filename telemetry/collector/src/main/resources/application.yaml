@@ -1,29 +1,15 @@
 spring:
   application:
     name: collector
-
-logging:
-  level:
-    ru.yandex.practicum.telemetry: TRACE
-    org:
-      springframework: ERROR
-      apache.kafka: WARN
-
-
-grpc:
-  server:
-    port: 59091
-    reflection-service-enabled: true
-
-collector:
-  kafka:
-    producer:
-      properties:
-        "bootstrap.servers": localhost:9092
-        "client.id": "telemetry.collector"
-        "key.serializer": org.apache.kafka.common.serialization.StringSerializer
-        "value.serializer": ru.yandex.practicum.kafka.serializer.GeneralAvroSerializer
-        "linger.ms": 0
-      topics:
-        sensors-events: telemetry.sensors.v1
-        hubs-events: telemetry.hubs.v1
+  config:
+    import: configserver:http://localhost:8888
+  cloud:
+    config:
+      # не загружать другие компоненты, до получения конфигурации
+      fail-fast: true
+      # если config-server недоступен - делать несколько попыток подключиться
+      retry:
+        # используем случайный backoff между попытками
+        useRandomPolicy: true
+        # максимальный интервал в течении которого делаем попытки (6000 миллисекунд = 6 сек)
+        max-interval: 6000
