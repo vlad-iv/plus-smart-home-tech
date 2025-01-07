@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -27,37 +28,35 @@ import ru.yandex.practicum.repository.ShoppingCartRepository;
 public class ShoppingCartService {
 
 	private final ShoppingCartRepository shoppingCartRepository;
-	private final WarehouseOperations warehouseOperations;
 
 //	@Transactional(readOnly = true)
-	public ShoppingCartDto getShoppingCart(String username) {
-		return shoppingCartMapper.toDto(getShoppingCartFromDB(username));
+	public ShoppingCart getShoppingCart(String username) {
+		return getShoppingCartFromDB(username);
 	}
 
-//	@Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.READ_COMMITTED)
-	public ShoppingCartDto addProductToShoppingCart(
+	@Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.READ_COMMITTED)
+	public ShoppingCart addProductToShoppingCart(
 			String username, Map<UUID, Long> products) {
 		bean.auditShopping();
-		ShoppingCart shoppingCartFromDB = getShoppingCartFromDB(username);
-		if (shoppingCartFromDB.getProducts() == null || shoppingCartFromDB.getProducts().isEmpty()) {
-			@NotNull
-			@NotEmpty
-			Map<@NotNull UUID, @NotNull @Positive Long> productsInStore = new HashMap<>(products);
-			shoppingCartFromDB.setProducts(productsInStore);
-		} else {
-			shoppingCartFromDB.getProducts().putAll(products);
-		}
-		warehouseOperations.checkProductQuantityEnoughForShoppingCart(
-				shoppingCartMapper.toDto(getShoppingCartFromDB(username)));
-		shoppingCartFromDB = shoppingCartRepository.save(shoppingCartFromDB);
-		return shoppingCartMapper.toDto(shoppingCartFromDB);
+		transactionTemplate.execute(() -> {
+			ShoppingCart shoppingCartFromDB = getShoppingCartFromDB(username);
+			if (shoppingCartFromDB.getProducts() == null || shoppingCartFromDB.getProducts().isEmpty()) {
+				@NotNull
+				@NotEmpty
+				Map<@NotNull UUID, @NotNull @Positive Long> productsInStore = new HashMap<>(products);
+				shoppingCartFromDB.setProducts(productsInStore);
+			} else {
+				shoppingCartFromDB.getProducts().putAll(products);
+			}
+			shoppingCartFromDB = shoppingCartRepository.save(shoppingCartFromDB);
+		});
+
+		return shoppingCartFromDB;
 	}
 
 
 	@Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.READ_COMMITTED) // Пусть это метод из другого бина
-	public ShoppingCartDto auditShopping() {
-
-
+	public ShoppingCart auditShopping() {
 	}
 
 	@Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.READ_COMMITTED) // Пусть это метод из другого бина
@@ -74,4 +73,7 @@ public class ShoppingCartService {
 		}
 	}
 
+	public ShoppingCart findByUserName(final String username) {
+		return null;
+	}
 }

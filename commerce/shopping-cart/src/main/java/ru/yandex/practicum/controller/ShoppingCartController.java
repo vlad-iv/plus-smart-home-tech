@@ -14,11 +14,13 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import ru.yandex.practicum.dto.ShoppingCartDto;
+import ru.yandex.practicum.facade.ShoppingCartFacade;
 
 @RestController
 @RequestMapping("/api/v1/shopping-cart")
 @RequiredArgsConstructor
 public class ShoppingCartController implements ShoppingCartOperations {
+	ShoppingCartFacade facade;
 	// Service
 	@Override
 	public ShoppingCartDto getShoppingCart(String username) {
