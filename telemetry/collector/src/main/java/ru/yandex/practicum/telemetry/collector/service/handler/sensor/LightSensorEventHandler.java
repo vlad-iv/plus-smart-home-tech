@@ -1,8 +1,6 @@
 package ru.yandex.practicum.telemetry.collector.service.handler.sensor;
 
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
-
 import ru.yandex.practicum.kafka.telemetry.event.LightSensorAvro;
 import ru.yandex.practicum.telemetry.collector.model.LightSensorEvent;
 import ru.yandex.practicum.telemetry.collector.model.SensorEvent;
@@ -12,7 +10,7 @@ import ru.yandex.practicum.telemetry.collector.service.KafkaEventProducer;
 /**
  * Обработчик события от датчика света
  */
-@Component
+@Service
 public class LightSensorEventHandler extends BaseSensorEventHandler<LightSensorAvro> {
     public LightSensorEventHandler(KafkaEventProducer producer) {
         super(producer);

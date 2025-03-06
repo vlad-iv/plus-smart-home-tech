@@ -9,6 +9,19 @@ logging:
       springframework: ERROR
       apache.kafka: WARN
 
+springdoc:
+  api-docs:
+    path: /docs
+  swagger-ui:
+    path: /docs/index.html
+    display-request-duration: true
+    groups-order: DESC
+    operationsSorter: method
+    disable-swagger-default-url: true
+    group-configs:
+      - group: events
+        paths-to-match: /events/**
+
 collector:
   kafka:
     producer:

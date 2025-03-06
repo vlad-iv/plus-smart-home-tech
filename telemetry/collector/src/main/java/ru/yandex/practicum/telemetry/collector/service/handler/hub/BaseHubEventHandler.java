@@ -1,14 +1,14 @@
-package ru.yandex.practicum.telemetry.collector.service.handler.sensor;
+package ru.yandex.practicum.telemetry.collector.service.handler.hub;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.avro.specific.SpecificRecordBase;
-import ru.yandex.practicum.kafka.telemetry.event.SensorEventAvro;
-import ru.yandex.practicum.telemetry.collector.model.SensorEvent;
+import ru.yandex.practicum.kafka.telemetry.event.HubEventAvro;
+import ru.yandex.practicum.telemetry.collector.model.HubEvent;
 import ru.yandex.practicum.telemetry.collector.service.KafkaEventProducer;
-import ru.yandex.practicum.telemetry.collector.service.handler.SensorEventHandler;
+import ru.yandex.practicum.telemetry.collector.service.handler.HubEventHandler;
 
-import static ru.yandex.practicum.telemetry.collector.configuration.KafkaConfig.TopicType.SENSORS_EVENTS;
+import static ru.yandex.practicum.telemetry.collector.configuration.KafkaConfig.TopicType.HUBS_EVENTS;
 
 /**
  * Базовый класс для обработчиков событий от датчиков, работающих с Avro.
@@ -16,18 +16,17 @@ import static ru.yandex.practicum.telemetry.collector.configuration.KafkaConfig.
  */
 @Slf4j
 @RequiredArgsConstructor
-public abstract class BaseSensorEventHandler<T extends SpecificRecordBase> implements SensorEventHandler {
-    // Используем один и тот же продюсер во всех хендлерах
+public abstract class BaseHubEventHandler<T extends SpecificRecordBase> implements HubEventHandler {
     protected final KafkaEventProducer producer;
 
     /**
-     * Метод для преобразования сообщения в Avro.
+     * Метод для преобразования сообщения из Protobuf в Avro.
      * Должен быть реализован в наследниках базового класса
      *
-     * @param event Событие от датчика
+     * @param event Событие от датчика в формате Protobuf
      * @return событие от датчика в формате Avro
      */
-    protected abstract T mapToAvro(SensorEvent event);
+    protected abstract T mapToAvro(HubEvent event);
 
     /**
      * Обрабатывает событие от датчика и сохраняет его в топик Kafka.
@@ -35,7 +34,7 @@ public abstract class BaseSensorEventHandler<T extends SpecificRecordBase> imple
      * @param event Событие от датчика
      */
     @Override
-    public void handle(SensorEvent event) {
+    public void handle(HubEvent event) {
         // Проверка соответствия типа события ожидаемому типу обработчика
         if (!event.getType().equals(getMessageType())) {
             throw new IllegalArgumentException("Неизвестный тип события: " + event.getType());
@@ -44,14 +43,12 @@ public abstract class BaseSensorEventHandler<T extends SpecificRecordBase> imple
         // Преобразование события в Avro-запись
         T payload = mapToAvro(event);
 
-        SensorEventAvro eventAvro = SensorEventAvro.newBuilder()
+        HubEventAvro eventAvro = HubEventAvro.newBuilder()
                 .setHubId(event.getHubId())
-                .setId(event.getId())
                 .setTimestamp(event.getTimestamp())
                 .setPayload(payload)
                 .build();
 
-        // отправка данных в топик Kafka
-        producer.send(eventAvro, event.getHubId(), event.getTimestamp(), SENSORS_EVENTS);
+        producer.send(eventAvro, event.getHubId(), event.getTimestamp(), HUBS_EVENTS);
     }
 }
