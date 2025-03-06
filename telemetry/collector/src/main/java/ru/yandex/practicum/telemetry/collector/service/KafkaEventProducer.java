@@ -4,12 +4,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.avro.specific.SpecificRecordBase;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
+import org.apache.kafka.clients.producer.RecordMetadata;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.telemetry.collector.configuration.KafkaConfig;
 
 import java.time.Duration;
 import java.time.Instant;
 import java.util.EnumMap;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 import static ru.yandex.practicum.telemetry.collector.configuration.KafkaConfig.TopicType;
 
@@ -60,11 +63,20 @@ public class KafkaEventProducer implements AutoCloseable {
         );
 
         // Логирование сохранения события
+        String eventClass = event.getClass().getSimpleName();
         log.trace("Сохраняю событие {} связанное с хабом {} в топик {}",
-                event.getClass().getSimpleName(), hubId, topic);
+                eventClass, hubId, topic);
 
         // Отправка события в топик Kafka
-        producer.send(record);
+        Future<RecordMetadata> futureResult = producer.send(record);
+        producer.flush();
+        try {
+            RecordMetadata metadata = futureResult.get();
+            log.info("Событие {} было успешно сохранёно в топик {} в партицию {} со смещением {}",
+                    eventClass, metadata.topic(), metadata.partition(), metadata.offset());
+        } catch (InterruptedException | ExecutionException e) {
+            log.warn("Не удалось записать событие {} в топик {}", eventClass, topic, e);
+        }
     }
 
     /**
