@@ -10,7 +10,7 @@ import ru.yandex.practicum.telemetry.collector.service.KafkaEventProducer;
 /**
  * Обработчик события от датчика климата
  */
-@Component
+@Component(value = "CLIMATE_SENSOR_EVENT")
 public class ClimateSensorEventHandler extends BaseSensorEventHandler<ClimateSensorAvro> {
 
     public ClimateSensorEventHandler(KafkaEventProducer producer) {
