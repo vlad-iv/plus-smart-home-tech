@@ -20,8 +20,6 @@ public class Scenario {
 
     private String name;
 
-    // Для ревью:
-    // Студентам не обязательно реализовывать связь с использованием @MapKeyColumn
     @OneToMany
     @MapKeyColumn(
             table = "scenario_conditions",
@@ -32,8 +30,6 @@ public class Scenario {
             inverseJoinColumns = @JoinColumn(name = "condition_id"))
     private Map<String, Condition> conditions = new HashMap<>();
 
-    // Для ревью:
-    // Студентам не обязательно реализовывать связь с использованием @MapKeyColumn
     @OneToMany
     @MapKeyColumn(
             table = "scenario_actions",
