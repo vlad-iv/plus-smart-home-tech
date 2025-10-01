@@ -1,14 +1,13 @@
 package ru.yandex.practicum.telemetry.collector.service.handler;
 
-import ru.yandex.practicum.telemetry.collector.model.HubEvent;
-import ru.yandex.practicum.telemetry.collector.model.HubEventType;
+import ru.yandex.practicum.grpc.telemetry.event.HubEventProto;
 
 // Интерфейс объединяющий все хендлеры для HubEvent событий
 // Благодаря ему, мы сможем внедрить все хендлеры в виде списка
 // в компонент, который будет распределять получаемые события по
 // их обработчикам
 public interface HubEventHandler {
-    HubEventType getMessageType();
+    HubEventProto.PayloadCase getMessageType();
 
-    void handle(HubEvent event);
+    void handle(HubEventProto event);
 }
