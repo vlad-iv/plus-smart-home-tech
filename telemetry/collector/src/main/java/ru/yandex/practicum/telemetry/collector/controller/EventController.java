@@ -19,6 +19,7 @@ import ru.yandex.practicum.telemetry.collector.model.*;
 import ru.yandex.practicum.telemetry.collector.service.handler.HubEventHandler;
 import ru.yandex.practicum.telemetry.collector.service.handler.SensorEventHandler;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
@@ -32,7 +33,7 @@ public class EventController {
     private final Map<SensorEventType, SensorEventHandler> sensorEventHandlers;
     private final Map<HubEventType, HubEventHandler> hubEventHandlers;
 
-    public EventController(Set<SensorEventHandler> sensorEventHandlers, Set<HubEventHandler> hubEventHandlers) {
+    public EventController(List<SensorEventHandler> sensorEventHandlers, Set<HubEventHandler> hubEventHandlers) {
         // Преобразовываем набор хендлеров в map, где ключ - тип события от конкретного датчика или hub'а
         // Это нужно для упрощения поиска подходящего хендлера во время обработки событий
         this.sensorEventHandlers = sensorEventHandlers.stream()

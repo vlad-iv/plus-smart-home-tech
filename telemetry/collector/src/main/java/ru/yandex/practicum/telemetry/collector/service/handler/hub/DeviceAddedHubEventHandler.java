@@ -12,7 +12,7 @@ import ru.yandex.practicum.telemetry.collector.utils.EnumMapper;
 /**
  * Обработчик события от датчика климата
  */
-@Component
+@Component(value = "DEVICE_ADDED")
 public class DeviceAddedHubEventHandler extends BaseHubEventHandler<DeviceAddedEventAvro> {
 
     public DeviceAddedHubEventHandler(KafkaEventProducer producer) {

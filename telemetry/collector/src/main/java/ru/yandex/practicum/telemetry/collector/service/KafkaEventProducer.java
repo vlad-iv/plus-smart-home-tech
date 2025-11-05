@@ -3,6 +3,7 @@ package ru.yandex.practicum.telemetry.collector.service;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.avro.specific.SpecificRecordBase;
 import org.apache.kafka.clients.producer.KafkaProducer;
+import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.telemetry.collector.configuration.KafkaConfig;
@@ -10,6 +11,7 @@ import ru.yandex.practicum.telemetry.collector.configuration.KafkaConfig;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.EnumMap;
+import java.util.Properties;
 
 import static ru.yandex.practicum.telemetry.collector.configuration.KafkaConfig.TopicType;
 

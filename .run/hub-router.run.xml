@@ -4,7 +4,7 @@
     <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
     <option name="PARENT_ENVS" value="true" />
     <module name="" />
-    <option name="SCRIPT_NAME" value="$USER_HOME$/.jdks/jbrsdk_jcef-21.0.8/bin/java -jar hub-router.jar --hub-router.execution.collector.mode=http --hub-router.execution.collector.port=8080" />
+    <option name="SCRIPT_NAME" value="$USER_HOME$/.jdks/jbrsdk_jcef-21.0.8/bin/java -jar hub-router.jar --hub-router.execution.collector.mode=http --hub-router.execution.collector.port=8080  --grpc.server.port=2334" />
     <option name="PARAMETERS" value="" />
     <method v="2">
       <option name="Make" enabled="true" />
